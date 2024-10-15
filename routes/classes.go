@@ -4,10 +4,15 @@ import (
 	"leecho/controllers"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/swagger"
 )
 
 func ClassRoutes(app *fiber.App) {
 	classController := controllers.NewClassController()
 
 	app.Get("/classes", classController.ListClasses)
+	app.Get("/swagger/*", swagger.New(swagger.Config{
+		URL: "http://localhost:3000/docs/swagger.json",
+	}))
+
 }
