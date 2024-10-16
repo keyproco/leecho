@@ -1,9 +1,12 @@
 package main
 
 import (
+	"leecho/config"
 	"leecho/routes"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 // @title School Management API Leecho
@@ -14,7 +17,10 @@ import (
 // @contact.email
 // @BasePath /api/v1
 func main() {
-
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	config.ConnectDatabase()
 	app := fiber.New()
 	app.Static("/docs", "./public/")
 
