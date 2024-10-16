@@ -1,21 +1,23 @@
 package controllers
 
 import (
+	"leecho/services"
+
 	"github.com/gofiber/fiber/v2"
 )
 
-type ClassController struct{}
+type ClassController struct {
+	classService *services.ClassService
+}
 
-func NewClassController() *ClassController {
-	return &ClassController{}
+func NewClassController(classService *services.ClassService) *ClassController {
+	return &ClassController{classService: classService}
 }
 
 func (c *ClassController) ListClasses(ctx *fiber.Ctx) error {
-	classes := []map[string]interface{}{
-		{"id": 1, "title": "Kubernetes 101", "description": "From Murrica Kube isnt Kube"},
-		{"id": 2, "title": "ArgoCD", "description": "Argocd for are you?"},
-		{"id": 3, "title": "Hashicorp Vault", "description": "Do you know the crochetage?"},
-		{"id": 4, "title": "Opentelemetry", "description": "It depends on how much technology scares you"},
+	classes, err := c.classService.GetAllClasses()
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Unable to fetch classes"})
 	}
 
 	return ctx.JSON(classes)
