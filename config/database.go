@@ -11,7 +11,7 @@ import (
 
 var DB *gorm.DB
 
-func ConnectDatabase() {
+func ConnectDatabase() error {
 
 	host := os.Getenv("DB_HOST")
 	user := os.Getenv("DB_USER")
@@ -30,4 +30,5 @@ func ConnectDatabase() {
 	}
 
 	log.Println("Database connection established successfully!")
+	return nil
 }

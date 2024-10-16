@@ -12,6 +12,7 @@ type RabbitMQConfig struct {
 	Channel    *amqp.Channel
 }
 
+// NewRabbitMQConfig initializes a new RabbitMQConfig instance
 func NewRabbitMQConfig(url string) (*RabbitMQConfig, error) {
 	conn, err := amqp.Dial(url)
 	if err != nil {
@@ -39,8 +40,8 @@ func (r *RabbitMQConfig) Close() {
 	}
 }
 
-// InitRabbitMQ initializes the RabbitMQ configuration
-func InitRabbitMQ() *RabbitMQConfig {
+// InitRabbitMQ initializes the RabbitMQ configuration and returns any error encountered
+func InitRabbitMQ() (*RabbitMQConfig, error) {
 	// Fetch RabbitMQ connection details from environment variables
 	username := os.Getenv("RABBITMQ_USER")
 	password := os.Getenv("RABBITMQ_PASSWORD")
@@ -49,15 +50,16 @@ func InitRabbitMQ() *RabbitMQConfig {
 
 	// Construct the connection URL
 	url := "amqp://" + username + ":" + password + "@" + host + ":" + port + "/"
-	rabbitMQConfig, err := NewRabbitMQConfig(url)
+	rabbitMQ, err := NewRabbitMQConfig(url)
 	if err != nil {
-		log.Fatalf("Failed to connect to RabbitMQ: %s", err)
+		return nil, err // Return error instead of logging and exiting
 	}
 	log.Println("RabbitMQ connection established successfully!")
-	return rabbitMQConfig
+	return rabbitMQ, nil
 }
 
-func (r *RabbitMQConfig) DeclareQueue(queueName string, durable bool) {
+// DeclareQueue declares a queue with the specified properties and returns any error encountered
+func (r *RabbitMQConfig) DeclareQueue(queueName string, durable bool) error {
 	_, err := r.Channel.QueueDeclare(
 		queueName,
 		durable,
@@ -67,6 +69,8 @@ func (r *RabbitMQConfig) DeclareQueue(queueName string, durable bool) {
 		nil,
 	)
 	if err != nil {
-		log.Fatalf("Failed to declare a queue: %s", err)
+		return err // Return error instead of logging and exiting
 	}
+	log.Printf("Queue '%s' declared successfully.", queueName)
+	return nil
 }
