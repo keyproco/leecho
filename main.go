@@ -2,6 +2,8 @@ package main
 
 import (
 	"leecho/config"
+	"leecho/consumers"
+	"leecho/models"
 	"leecho/routes"
 	"log"
 
@@ -35,6 +37,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %s", err)
 	}
+
+	if err := db.AutoMigrate(&models.Class{}); err != nil {
+		log.Fatalf("Failed to run migrations: %s", err)
+	}
+
+	consumers.StartClassCreatedConsumer(rabbitMQConfig, db)
 
 	app := fiber.New()
 	app.Static("/docs", "./public/")
