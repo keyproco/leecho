@@ -31,14 +31,15 @@ func main() {
 		log.Fatalf("Failed to declare queue: %s", err)
 	}
 
-	if err := config.ConnectDatabase(); err != nil {
+	db, err := config.ConnectDatabase()
+	if err != nil {
 		log.Fatalf("Failed to connect to database: %s", err)
 	}
 
 	app := fiber.New()
 	app.Static("/docs", "./public/")
 
-	routes.ClassRoutes(app)
+	routes.ClassRoutes(app, rabbitMQConfig, db)
 
 	log.Println("Starting server on :3000...")
 	if err := app.Listen(":3000"); err != nil {

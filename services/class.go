@@ -1,11 +1,22 @@
 package services
 
-import "leecho/models"
+import (
+	"leecho/config"
+	"leecho/models"
 
-type ClassService struct{}
+	"gorm.io/gorm"
+)
 
-func NewClassService() *ClassService {
-	return &ClassService{}
+type ClassService struct {
+	DB             *gorm.DB
+	rabbitMQConfig *config.RabbitMQConfig
+}
+
+func NewClassService(db *gorm.DB, rabbitMQConfig *config.RabbitMQConfig) *ClassService {
+	return &ClassService{
+		DB:             db,
+		rabbitMQConfig: rabbitMQConfig,
+	}
 }
 
 func (s *ClassService) GetAllClasses() ([]models.Class, error) {
@@ -16,4 +27,8 @@ func (s *ClassService) GetAllClasses() ([]models.Class, error) {
 		{ID: 4, Title: "Opentelemetry", Description: "It depends on how much technology scares you"},
 	}
 	return classes, nil
+}
+
+func (s *ClassService) CreateClass(class *models.Class) error {
+	return models.CreateClass(s.DB, class)
 }

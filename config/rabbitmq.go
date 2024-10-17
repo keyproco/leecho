@@ -52,13 +52,12 @@ func InitRabbitMQ() (*RabbitMQConfig, error) {
 	url := "amqp://" + username + ":" + password + "@" + host + ":" + port + "/"
 	rabbitMQ, err := NewRabbitMQConfig(url)
 	if err != nil {
-		return nil, err // Return error instead of logging and exiting
+		return nil, err
 	}
 	log.Println("RabbitMQ connection established successfully!")
 	return rabbitMQ, nil
 }
 
-// DeclareQueue declares a queue with the specified properties and returns any error encountered
 func (r *RabbitMQConfig) DeclareQueue(queueName string, durable bool) error {
 	_, err := r.Channel.QueueDeclare(
 		queueName,
@@ -69,8 +68,27 @@ func (r *RabbitMQConfig) DeclareQueue(queueName string, durable bool) error {
 		nil,
 	)
 	if err != nil {
-		return err // Return error instead of logging and exiting
+		return err
 	}
 	log.Printf("Queue '%s' declared successfully.", queueName)
+	return nil
+}
+
+func (r *RabbitMQConfig) PublishMessage(queueName string, message []byte) error {
+	err := r.Channel.Publish(
+		"",
+		queueName,
+		false,
+		false,
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        message,
+		})
+	if err != nil {
+		log.Printf("Failed to publish message: %s", err)
+		return err
+	}
+
+	log.Printf("Message published to queue %s: %s", queueName, message)
 	return nil
 }

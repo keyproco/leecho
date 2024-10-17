@@ -2,6 +2,8 @@ package models
 
 import (
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Class struct {
@@ -10,4 +12,8 @@ type Class struct {
 	Description string    `json:"description" gorm:"size:1024"`
 	CreatedAt   time.Time `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt   time.Time `json:"updated_at" gorm:"autoUpdateTime"`
+}
+
+func CreateClass(db *gorm.DB, class *Class) error {
+	return db.Create(class).Error
 }
