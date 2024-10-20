@@ -6,6 +6,13 @@ import (
 	"gorm.io/gorm"
 )
 
+type Tag struct {
+	ID        uint      `json:"id" gorm:"primaryKey;autoIncrement"`
+	Name      string    `json:"name" gorm:"size:255;not null"`
+	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime"`
+}
+
 type Course struct {
 	ID              uint         `json:"id" gorm:"primaryKey;autoIncrement"`
 	Title           string       `json:"title" gorm:"size:255;not null"`
@@ -14,8 +21,8 @@ type Course struct {
 	CreatedAt       time.Time    `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt       time.Time    `json:"updated_at" gorm:"autoUpdateTime"`
 	Instructors     []Instructor `json:"instructors" gorm:"many2many:course_instructors;"`
-	Classes         []Class      `json:"classes" gorm:"foreignKey:CourseID"`
 	EnrollmentLimit int          `json:"enrollment_limit"`
+	Tags            []Tag        `json:"tags" gorm:"many2many:course_tags;"`
 }
 
 type Instructor struct {
