@@ -1,4 +1,4 @@
-module leecho
+module class
 
 go 1.23
 

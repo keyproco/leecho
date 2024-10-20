@@ -1,10 +1,10 @@
 package controllers
 
 import (
+	"class/config"
+	"class/models"
+	"class/services"
 	"encoding/json"
-	"leecho/config"
-	"leecho/models"
-	"leecho/services"
 
 	"github.com/gofiber/fiber/v2"
 )

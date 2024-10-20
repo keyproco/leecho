@@ -1,10 +1,10 @@
 package main
 
 import (
-	"leecho/config"
-	"leecho/consumers"
-	"leecho/models"
-	"leecho/routes"
+	"class/config"
+	"class/consumers"
+	"class/models"
+	"class/routes"
 	"log"
 
 	"github.com/gofiber/fiber/v2"

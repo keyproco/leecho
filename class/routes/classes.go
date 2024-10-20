@@ -1,10 +1,10 @@
 package routes
 
 import (
-	"leecho/config"
-	"leecho/controllers"
+	"class/config"
+	"class/controllers"
 
-	"leecho/services"
+	"class/services"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"

@@ -1,9 +1,9 @@
 package consumers
 
 import (
+	"class/config"
+	"class/models"
 	"encoding/json"
-	"leecho/config"
-	"leecho/models"
 	"log"
 
 	"gorm.io/gorm"
@@ -33,8 +33,7 @@ func StartClassCreatedConsumer(rabbitMQConfig *config.RabbitMQConfig, db *gorm.D
 				log.Printf("Failed to unmarshal class data: %s", err)
 				continue
 			}
-
-			if err := db.Create(&class).Error; err != nil {
+			if err := models.CreateClass(db, &class); err != nil {
 				log.Printf("Failed to insert class into database: %s", err)
 				continue
 			}

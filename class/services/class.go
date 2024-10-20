@@ -1,8 +1,8 @@
 package services
 
 import (
-	"leecho/config"
-	"leecho/models"
+	"class/config"
+	"class/models"
 
 	"gorm.io/gorm"
 )
