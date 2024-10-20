@@ -41,6 +41,9 @@ func main() {
 	if err := db.AutoMigrate(&models.Class{}); err != nil {
 		log.Fatalf("Failed to run migrations: %s", err)
 	}
+	if err := models.MigrateDefaultClassTypes(db); err != nil {
+		log.Fatalf("Failed to migrate default class types: %s", err)
+	}
 
 	consumers.StartClassCreatedConsumer(rabbitMQConfig, db)
 
