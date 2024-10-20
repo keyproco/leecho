@@ -17,6 +17,7 @@ func ClassRoutes(app *fiber.App, rabbitMQConfig *config.RabbitMQConfig, db *gorm
 	classController := controllers.NewCourseController(courseService, rabbitMQConfig)
 
 	app.Post("/course", classController.CreateCourse)
+	app.Delete("/course", classController.DeleteCourse)
 	app.Get("/swagger/*", swagger.New(swagger.Config{
 		URL: "http://localhost:3000/docs/swagger.json",
 	}))

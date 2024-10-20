@@ -22,3 +22,7 @@ func NewCourseService(db *gorm.DB, rabbitMQConfig *config.RabbitMQConfig) *Cours
 func (s *CourseService) CreateCourse(course *models.Course) error {
 	return models.CreateCourse(s.DB, course)
 }
+
+func DeleteCourse(db *gorm.DB, course *models.Course) error {
+	return db.Delete(course).Error
+}

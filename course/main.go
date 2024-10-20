@@ -29,7 +29,7 @@ func main() {
 	}
 	defer rabbitMQConfig.Close()
 
-	if err := rabbitMQConfig.DeclareQueue("course_created", true); err != nil {
+	if err := rabbitMQConfig.DeclareQueue("course_events", true); err != nil {
 		log.Fatalf("Failed to declare queue: %s", err)
 	}
 
@@ -42,7 +42,7 @@ func main() {
 		log.Fatalf("Failed to run migrations: %s", err)
 	}
 
-	consumers.StartCourseCreatedConsumer(rabbitMQConfig, db)
+	consumers.StartCourseEventConsumer(rabbitMQConfig, db)
 
 	app := fiber.New()
 	app.Static("/docs", "./public/")
