@@ -23,6 +23,8 @@ type Course struct {
 	Instructors     []Instructor `json:"instructors" gorm:"many2many:course_instructors;"`
 	EnrollmentLimit int          `json:"enrollment_limit"`
 	Tags            []Tag        `json:"tags" gorm:"many2many:course_tags;"`
+	SubCourses      []Course     `json:"sub_courses" gorm:"foreignKey:ParentCourseID"`
+	ParentCourseID  *uint        `json:"parent_course_id"`
 }
 
 type Instructor struct {
