@@ -1,0 +1,13 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API for a school management system.",
+        "title": "School Management API Leecho",
+        "contact": {
+            "name": "Akme"
+        },
+        "version": "0.1"
+    },
+    "basePath": "/api/v1",
+    "paths": {}
+}
