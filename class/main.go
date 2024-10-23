@@ -29,7 +29,7 @@ func main() {
 	}
 	defer rabbitMQConfig.Close()
 
-	if err := rabbitMQConfig.DeclareQueue("class_created", true); err != nil {
+	if err := rabbitMQConfig.DeclareQueue("class_events", true); err != nil {
 		log.Fatalf("Failed to declare queue: %s", err)
 	}
 
@@ -45,7 +45,7 @@ func main() {
 		log.Fatalf("Failed to migrate default class types: %s", err)
 	}
 
-	consumers.StartClassCreatedConsumer(rabbitMQConfig, db)
+	consumers.StartClassEventConsumer(rabbitMQConfig, db)
 
 	app := fiber.New()
 	app.Static("/docs", "./public/")

@@ -22,26 +22,33 @@ var defaultClassTypes = []ClassType{
 }
 
 type Class struct {
-	ID           uint      `json:"id" gorm:"primaryKey;autoIncrement"`
-	Title        string    `json:"title" gorm:"size:255;not null"`
-	Description  string    `json:"description" gorm:"size:1024"`
-	CompanyID    uint      `json:"company_id" gorm:"not null"`
-	CourseID     uint      `json:"course_id" gorm:"not null"`
-	InstructorID uint      `json:"instructor_id" gorm:"not null"`
-	ScheduledAt  time.Time `json:"scheduled_at" gorm:"not null"`
-
-	Duration        uint       `json:"duration" gorm:"not null"`
-	MaxParticipants uint       `json:"max_participants" gorm:"not null"`
-	CurrentEnrolled uint       `json:"current_enrolled" gorm:"default:0"`
-	WaitlistEnabled bool       `json:"waitlist_enabled" gorm:"default:false"`
-	ClassTypeID     uint       `json:"class_type_id" gorm:"not null"`
-	ClassType       *ClassType `gorm:"foreignKey:ClassTypeID"`
-	CreatedAt       time.Time  `json:"created_at" gorm:"autoCreateTime"`
-	UpdatedAt       time.Time  `json:"updated_at" gorm:"autoUpdateTime"`
+	ID              uint      `json:"id" gorm:"primaryKey;autoIncrement"`
+	Title           string    `json:"title" gorm:"size:255;not null"`
+	Description     string    `json:"description" gorm:"size:1024"`
+	CompanyID       uint      `json:"company_id" gorm:"not null"`
+	CourseID        uint      `json:"course_id" gorm:"not null"`
+	InstructorID    uint      `json:"instructor_id" gorm:"not null"`
+	ScheduledAt     time.Time `json:"scheduled_at" gorm:"not null"`
+	Duration        uint      `json:"duration" gorm:"not null"`
+	MaxParticipants uint      `json:"max_participants" gorm:"not null"`
+	CurrentEnrolled uint      `json:"current_enrolled" gorm:"default:0"`
+	WaitlistEnabled bool      `json:"waitlist_enabled" gorm:"default:false"`
+	ClassTypeID     uint      `json:"class_type_id" gorm:"not null"`
+	ClassType       ClassType `json:"class_type" gorm:"foreignKey:ClassTypeID"`
+	CreatedAt       time.Time `json:"created_at" gorm:"autoCreateTime"`
+	UpdatedAt       time.Time `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
 func CreateClass(db *gorm.DB, class *Class) error {
 	return db.Create(class).Error
+}
+
+func UpdateClass(db *gorm.DB, id uint, class *Class) error {
+	return db.Model(&Class{}).Where("id = ?", id).Updates(class).Error
+}
+
+func DeleteClass(db *gorm.DB, id uint) error {
+	return db.Delete(&Class{}, id).Error
 }
 
 func MigrateDefaultClassTypes(db *gorm.DB) error {
@@ -59,4 +66,12 @@ func MigrateDefaultClassTypes(db *gorm.DB) error {
 		}
 	}
 	return nil
+}
+
+func GetAllClasses(db *gorm.DB) ([]Class, error) {
+	var classes []Class
+	if err := db.Preload("ClassType").Find(&classes).Error; err != nil {
+		return nil, err
+	}
+	return classes, nil
 }
