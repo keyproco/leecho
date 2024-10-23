@@ -51,10 +51,9 @@ func (c *CourseController) CreateCourse(ctx *fiber.Ctx) error {
 	}
 
 	course := models.Course{
-		Title:           courseRequest.Title,
-		Description:     courseRequest.Description,
-		Category:        courseRequest.Category,
-		EnrollmentLimit: courseRequest.EnrollmentLimit,
+		Title:       courseRequest.Title,
+		Description: courseRequest.Description,
+		Category:    courseRequest.Category,
 	}
 
 	courseEvent := map[string]interface{}{
@@ -105,8 +104,13 @@ func (c *CourseController) DeleteCourse(ctx *fiber.Ctx) error {
 
 func (c *CourseController) UpdateCourse(ctx *fiber.Ctx) error {
 	var course models.Course
+
 	if err := ctx.BodyParser(&course); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
+	}
+
+	if course.ID == 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Course ID is required for updating"})
 	}
 
 	courseEvent := map[string]interface{}{
