@@ -74,6 +74,16 @@ func (r *RabbitMQConfig) DeclareQueue(queueName string, durable bool) error {
 	return nil
 }
 
+func (r *RabbitMQConfig) DeclareQueues(queues []string, durable bool) error {
+	for _, queue := range queues {
+		if err := r.DeclareQueue(queue, durable); err != nil {
+			log.Fatalf("Failed to declare queue %s: %s", queue, err)
+			return err
+		}
+	}
+	return nil
+}
+
 func (r *RabbitMQConfig) PublishMessage(queueName string, message []byte) error {
 	err := r.Channel.Publish(
 		"",
