@@ -49,6 +49,18 @@ func StartCourseEventConsumer(rabbitMQConfig *config.RabbitMQConfig, db *gorm.DB
 				}
 				log.Printf("Course '%s' inserted into the database successfully!", courseEvent.Course.Title)
 
+			case "course.updated":
+				log.Printf("Handling course updated event for course: %s", courseEvent.Course.Title)
+				if courseEvent.Course.ID == 0 {
+					log.Printf("No Course ID provided for update event")
+					continue
+				}
+
+				if err := models.UpdateCourse(db, courseEvent.Course.ID, &courseEvent.Course); err != nil {
+					log.Printf("Failed to update course in the database: %s", err)
+					continue
+				}
+				log.Printf("Course '%s' updated in the database successfully!", courseEvent.Course.Title)
 			case "course.deleted":
 				log.Printf("Handling course deleted event for course ID: %d", courseEvent.ID)
 				if err := models.DeleteCourse(db, courseEvent.ID); err != nil {
