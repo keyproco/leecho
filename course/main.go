@@ -29,8 +29,9 @@ func main() {
 		log.Fatalf("Failed to connect to RabbitMQ: %s", err)
 	}
 	defer rabbitMQConfig.Close()
+	queues := []string{"course_events", "coursePath_events"}
 
-	if err := rabbitMQConfig.DeclareQueue("course_events", true); err != nil {
+	if err := rabbitMQConfig.DeclareQueues(queues, true); err != nil {
 		log.Fatalf("Failed to declare queue: %s", err)
 	}
 
