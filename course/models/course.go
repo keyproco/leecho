@@ -36,6 +36,17 @@ type CoursePath struct {
 	UpdatedAt   time.Time `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
+type Step struct {
+	ID           uint      `json:"id" gorm:"primaryKey;autoIncrement"`
+	CoursePathID uint      `json:"course_path_id" gorm:"not null"`
+	CourseID     uint      `json:"course_id" gorm:"not null"`
+	Position     uint      `json:"position" gorm:"not null"`
+	IsMandatory  bool      `json:"is_mandatory" gorm:"default:false"`
+	Steps        []Step    `json:"steps" gorm:"foreignKey:CoursePathID"`
+	CreatedAt    time.Time `json:"created_at" gorm:"autoCreateTime"`
+	UpdatedAt    time.Time `json:"updated_at" gorm:"autoUpdateTime"`
+}
+
 type Instructor struct {
 	ID        uint      `json:"id" gorm:"primaryKey;autoIncrement"`
 	Name      string    `json:"name" gorm:"size:255;not null"`
@@ -50,6 +61,17 @@ func CreateCourse(db *gorm.DB, course *Course) error {
 	return db.Create(course).Error
 }
 
+func UpdateCourse(db *gorm.DB, courseID uint, updatedData *Course) error {
+	return db.Model(&Course{}).Where("id = ?", courseID).Updates(updatedData).Error
+}
+
 func DeleteCourse(db *gorm.DB, courseID uint) error {
 	return db.Where("id = ?", courseID).Delete(&Course{}).Error
+}
+
+func DeleteMultipleCourses(db *gorm.DB, courseIDs []uint) error {
+	if err := db.Where("id IN ?", courseIDs).Delete(&Course{}).Error; err != nil {
+		return err
+	}
+	return nil
 }

@@ -44,18 +44,18 @@ func StartCourseEventConsumer(rabbitMQConfig *config.RabbitMQConfig, db *gorm.DB
 			case "course.created":
 				log.Printf("Handling course created event for course: %s", courseEvent.Course.Title)
 				if err := models.CreateCourse(db, &courseEvent.Course); err != nil {
-					log.Printf("Failed to insert course into database: %s", err)
+					log.Printf("Failed to insert course into the database: %s", err)
 					continue
 				}
-				log.Printf("Course %s inserted into the database successfully!", courseEvent.Course.Title)
+				log.Printf("Course '%s' inserted into the database successfully!", courseEvent.Course.Title)
 
 			case "course.deleted":
-				log.Printf("Handling course deleted event for course: %d", courseEvent.ID)
+				log.Printf("Handling course deleted event for course ID: %d", courseEvent.ID)
 				if err := models.DeleteCourse(db, courseEvent.ID); err != nil {
-					log.Printf("Failed to delete course from database: %s", err)
+					log.Printf("Failed to delete course from the database: %s", err)
 					continue
 				}
-				log.Printf("Course %s deleted from the database successfully!", courseEvent.Course.Title)
+				log.Printf("Course with ID %d deleted from the database successfully!", courseEvent.ID)
 
 			default:
 				log.Printf("Unknown event type: %s", courseEvent.EventType)
