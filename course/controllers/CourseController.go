@@ -3,6 +3,7 @@ package controllers
 import (
 	"course/config"
 	"course/models"
+	"course/requests"
 	"course/services"
 	"encoding/json"
 	"strconv"
@@ -34,21 +35,39 @@ func (c *CourseController) ListAllCourses(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"data": courses})
 }
 
+// CreateCourse handles the creation of a course.
+// @Summary Create a course
+// @Description Create a new course
+// @Accept json
+// @Produce json
+// @Param course body models.CourseCreateRequest true "CourseCreateRequest"
+// @Success 201 {object} models.CourseCreateRequest
+// @Failure 400 {object} object
+// @Router /course [post]
 func (c *CourseController) CreateCourse(ctx *fiber.Ctx) error {
-	var course models.Course
-	if err := ctx.BodyParser(&course); err != nil {
+	var courseRequest requests.CourseCreateRequest
+	if err := ctx.BodyParser(&courseRequest); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
 	}
+
+	course := models.Course{
+		Title:           courseRequest.Title,
+		Description:     courseRequest.Description,
+		Category:        courseRequest.Category,
+		EnrollmentLimit: courseRequest.EnrollmentLimit,
+	}
+
 	courseEvent := map[string]interface{}{
 		"event_type":   "course.created",
 		"service_name": "course_service",
 		"course":       course,
 	}
-	courseJSON, err := json.Marshal(courseEvent)
 
+	courseJSON, err := json.Marshal(courseEvent)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Could not serialize course"})
 	}
+
 	if err := c.rabbitMQConfig.PublishMessage("course_events", courseJSON); err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Could not create course"})
 	}

@@ -3,6 +3,8 @@ package main
 import (
 	"course/config"
 	"course/consumers"
+
+	// _ "course/docs"
 	"course/models"
 	"course/routes"
 	"log"
@@ -17,7 +19,7 @@ import (
 // @contact.name Akme
 // @contact.url
 // @contact.email
-// @BasePath /api/v1
+// @BasePath /
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")

@@ -16,6 +16,9 @@ func ClassRoutes(app *fiber.App, rabbitMQConfig *config.RabbitMQConfig, db *gorm
 	courseService := services.NewCourseService(db, rabbitMQConfig)
 	classController := controllers.NewCourseController(courseService, rabbitMQConfig)
 
+	app.Get("/test", func(c *fiber.Ctx) error {
+		return c.SendString("ok")
+	})
 	app.Post("/course", classController.CreateCourse)
 	app.Put("/course", classController.UpdateCourse)
 	app.Delete("/course", classController.DeleteCourse)
