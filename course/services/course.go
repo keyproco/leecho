@@ -53,3 +53,23 @@ func (s *CourseService) ListAllCourses() ([]models.Course, error) {
 
 	return courses, nil
 }
+
+func (s *CourseService) ListAllCoursePaths() ([]models.CoursePath, error) {
+	var coursePaths []models.CoursePath
+
+	if err := s.DB.Preload("Courses").Find(&coursePaths).Error; err != nil {
+		return nil, err
+	}
+
+	return coursePaths, nil
+}
+
+func (s *CourseService) GetCoursePathByID(coursePathID uint) (*models.CoursePath, error) {
+	var coursePath models.CoursePath
+
+	if err := s.DB.Preload("Courses").First(&coursePath, coursePathID).Error; err != nil {
+		return nil, err
+	}
+
+	return &coursePath, nil
+}
