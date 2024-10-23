@@ -4,7 +4,6 @@ import (
 	"course/config"
 	"course/consumers"
 
-	// _ "course/docs"
 	"course/models"
 	"course/routes"
 	"log"

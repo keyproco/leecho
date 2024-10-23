@@ -24,7 +24,7 @@ func NewCourseController(CourseService *services.CourseService, rabbitMQConfig *
 	}
 }
 
-// TODO Panigation
+// TODO Pagination
 
 func (c *CourseController) ListAllCourses(ctx *fiber.Ctx) error {
 	courses, err := c.courseService.ListAllCourses()
@@ -40,10 +40,11 @@ func (c *CourseController) ListAllCourses(ctx *fiber.Ctx) error {
 // @Description Create a new course
 // @Accept json
 // @Produce json
-// @Param course body models.CourseCreateRequest true "CourseCreateRequest"
-// @Success 201 {object} models.CourseCreateRequest
+// @Param course body requests.CourseCreateRequest true "CourseCreateRequest"
+// @Success 201 {object} requests.CourseCreateRequest
 // @Failure 400 {object} object
 // @Router /course [post]
+// @tags Courses
 func (c *CourseController) CreateCourse(ctx *fiber.Ctx) error {
 	var courseRequest requests.CourseCreateRequest
 	if err := ctx.BodyParser(&courseRequest); err != nil {
@@ -74,6 +75,17 @@ func (c *CourseController) CreateCourse(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusCreated).JSON(course)
 }
 
+// DeleteCourse deletes a course.
+// @Summary Delete a course
+// @Description Delete a course by ID
+// @Accept json
+// @Produce json
+// @Param id body uint true "Course ID"
+// @Success 200 {object} object
+// @Failure 400 {object} object
+// @Failure 500 {object} object
+// @Router /course [delete]
+// @tags Courses
 func (c *CourseController) DeleteCourse(ctx *fiber.Ctx) error {
 	var requestBody struct {
 		ID uint `json:"id"`
@@ -102,6 +114,17 @@ func (c *CourseController) DeleteCourse(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Course deleted successfully", "id": requestBody.ID})
 }
 
+// UpdateCourse updates a course.
+// @Summary Update a course
+// @Description Update an existing course by ID
+// @Accept json
+// @Produce json
+// @Param course body models.Course true "Course"
+// @Success 200 {object} models.Course
+// @Failure 400 {object} object
+// @Failure 500 {object} object
+// @Router /course [put]
+// @tags Courses
 func (c *CourseController) UpdateCourse(ctx *fiber.Ctx) error {
 	var course models.Course
 
@@ -132,6 +155,17 @@ func (c *CourseController) UpdateCourse(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Course updated successfully", "course": course})
 }
 
+// DeleteAllCourses deletes multiple courses.
+// @Summary Delete multiple courses
+// @Description Delete multiple courses by their IDs
+// @Accept json
+// @Produce json
+// @Param ids body []uint true "Course IDs"
+// @Success 200 {object} object
+// @Failure 400 {object} object
+// @Failure 500 {object} object
+// @Router /courses/delete [delete]
+// @tags Courses
 func (c *CourseController) DeleteAllCourses(ctx *fiber.Ctx) error {
 	var requestBody struct {
 		IDs []uint `json:"ids"`
@@ -162,6 +196,17 @@ func (c *CourseController) DeleteAllCourses(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Courses deleted successfully", "ids": requestBody.IDs})
 }
 
+// GetCourseWithSubcourses gets a course with its subcourses.
+// @Summary Get a course with subcourses
+// @Description Retrieve a course and its subcourses by ID
+// @Accept json
+// @Produce json
+// @Param id path uint true "Course ID"
+// @Success 200 {object} models.Course
+// @Failure 400 {object} object
+// @Failure 404 {object} object
+// @Router /course/{id} [get]
+// @tags Courses
 func (c *CourseController) GetCourseWithSubcourses(ctx *fiber.Ctx) error {
 	courseID, err := strconv.Atoi(ctx.Params("id"))
 	if err != nil {
