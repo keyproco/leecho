@@ -16,6 +16,9 @@ func ClassRoutes(app *fiber.App, rabbitMQConfig *config.RabbitMQConfig, db *gorm
 	courseService := services.NewCourseService(db, rabbitMQConfig)
 	classController := controllers.NewCourseController(courseService, rabbitMQConfig)
 
+	coursePathService := services.NewCoursePathService(db, rabbitMQConfig)
+	coursePathController := controllers.NewCoursePathController(coursePathService, rabbitMQConfig)
+
 	app.Get("/test", func(c *fiber.Ctx) error {
 		return c.SendString("ok")
 	})
@@ -26,6 +29,12 @@ func ClassRoutes(app *fiber.App, rabbitMQConfig *config.RabbitMQConfig, db *gorm
 
 	app.Get("/courses", classController.ListAllCourses)
 	app.Get("/course/:id", classController.GetCourseWithSubcourses)
+
+	app.Post("/coursepath", coursePathController.CreateCoursePath)
+	app.Put("/coursepath/:id", coursePathController.UpdateCoursePath)
+	app.Delete("/coursepath/:id", coursePathController.DeleteCoursePath)
+	app.Get("/coursepaths", coursePathController.ListAllCoursePaths)
+	app.Get("/coursepath/:id", coursePathController.GetCoursePathByID)
 
 	app.Get("/swagger/*", swagger.New(swagger.Config{
 		URL: "http://localhost:3000/docs/swagger.json",
