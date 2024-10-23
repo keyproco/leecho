@@ -182,6 +182,35 @@
                 }
             }
         },
+        "/courses": {
+            "get": {
+                "description": "Retrieve a list of all courses",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "List all courses",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Course"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
         "/courses/delete": {
             "delete": {
                 "description": "Delete multiple courses by their IDs",

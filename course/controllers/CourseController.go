@@ -25,7 +25,14 @@ func NewCourseController(CourseService *services.CourseService, rabbitMQConfig *
 }
 
 // TODO Pagination
-
+// ListAllCourses handles listing all courses.
+// @Summary List all courses
+// @Description Retrieve a list of all courses
+// @Produce json
+// @Success 200 {array} models.Course
+// @Failure 500 {object} object
+// @Router /courses [get]
+// @tags Courses
 func (c *CourseController) ListAllCourses(ctx *fiber.Ctx) error {
 	courses, err := c.courseService.ListAllCourses()
 	if err != nil {
